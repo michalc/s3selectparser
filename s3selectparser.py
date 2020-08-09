@@ -1,5 +1,6 @@
 from pyparsing import (
     CaselessKeyword,
+    Group,
     Keyword,
     Word,
     alphas,
@@ -15,8 +16,11 @@ ASTERISK = Keyword('*')
 identifier = Word(alphas, alphanums + '_').setName('identifier')
 projections = (delimitedList(identifier) | ASTERISK).setResultsName('projections')
 
+identifier_all_rows = Group(identifier + '[*]')
+table_name = (identifier_all_rows | identifier).setResultsName('table_name')
+
 s3_select_parser = \
     SELECT + \
     projections + \
     FROM + \
-    'S3Object'
+    table_name
