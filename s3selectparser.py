@@ -14,10 +14,10 @@ SELECT, FROM = map(
 ASTERISK = Keyword('*')
 
 identifier = Word(alphas, alphanums + '_').setName('identifier')
-projections = (delimitedList(identifier) | ASTERISK).setResultsName('projections')
+projections = (delimitedList(identifier) | ASTERISK)('projections')
 
 identifier_all_rows = Group(identifier + '[*]')
-table_name = (identifier_all_rows | identifier).setResultsName('table_name')
+table_name = (identifier_all_rows | identifier)('table_name')
 
 s3_select_parser = \
     SELECT + \
