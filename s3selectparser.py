@@ -56,10 +56,9 @@ identifier = Combine(
 # SELECT projection [ AS column_alias | column_alias ] [, ...]
 
 def projection_transform(_, __, tokens):
-    d = tokens.asDict()
     return {
-        'projection': d['projection'],
-        'alias': d.get('alias', d['projection']),
+        'projection': tokens['projection'],
+        'alias': tokens.get('alias', tokens['projection']),
     }
 
 
