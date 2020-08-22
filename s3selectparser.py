@@ -61,13 +61,13 @@ def projection_transform(_, __, tokens):
     return {
         **d,
         **({
-            'column_alias': d['projection']
-        } if 'column_alias' not in d else {})
+            'alias': d['projection']
+        } if 'alias' not in d else {})
     }
 
 
 projection = \
-    (identifier('projection') + Optional(Optional(AS) + identifier('column_alias'))) \
+    (identifier('projection') + Optional(Optional(AS) + identifier('alias'))) \
     .setParseAction(projection_transform)
 
 
