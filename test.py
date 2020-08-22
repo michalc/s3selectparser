@@ -9,14 +9,40 @@ class TestIntegration(unittest.TestCase):
         parsed = s3_select_parser.parseString('SELECT * FROM S3Object')
         self.assertEqual(parsed.asDict(), {
             'select_list': '*',
-            'table_name': 'S3Object',
+            'from': {
+                'table': 'S3Object',
+                'alias': 'S3Object'
+            }
         })
 
     def test_select_asterisk(self):
         parsed = s3_select_parser.parseString('SELECT * FROM S3Object[*]')
         self.assertEqual(parsed.asDict(), {
             'select_list': '*',
-            'table_name': 'S3Object[*]',
+            'from': {
+                'table': 'S3Object[*]',
+                'alias': 'S3Object[*]'
+            }
+        })
+
+    def test_table_alias_no_as(self):
+        parsed = s3_select_parser.parseString('SELECT * FROM S3Object[*] my_alias')
+        self.assertEqual(parsed.asDict(), {
+            'select_list': '*',
+            'from': {
+                'table': 'S3Object[*]',
+                'alias': 'my_alias'
+            }
+        })
+
+    def test_table_alias_with_as(self):
+        parsed = s3_select_parser.parseString('SELECT * FROM S3Object[*] AS my_alias')
+        self.assertEqual(parsed.asDict(), {
+            'select_list': '*',
+            'from': {
+                'table': 'S3Object[*]',
+                'alias': 'my_alias'
+            }
         })
 
     def test_select_with_alias(self):
@@ -30,5 +56,8 @@ class TestIntegration(unittest.TestCase):
                 {'projection': '"AS"', 'column_alias': '"AS"'},
                 {'projection': '"AS"', 'column_alias': '"FrOM"'},
             ],
-            'table_name': 'S3Object[*]',
+            'from': {
+                'table': 'S3Object[*]',
+                'alias': 'S3Object[*]'
+            }
         })

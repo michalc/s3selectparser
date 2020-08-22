@@ -10,6 +10,7 @@ from pyparsing import (
     Keyword,
     MatchFirst,
     Optional,
+    Suppress,
     Word,
     alphas,
     alphanums,
@@ -88,10 +89,21 @@ select_list = \
 # FROM S3Object[*].path alias
 # FROM S3Object[*].path AS alias
 
-table_name = Combine(Group(Keyword('S3Object[*]') | Keyword('S3Object')))('table_name')
+def table_transform(_, __, tokens):
+    d = tokens.asDict()
+    return {
+        'table': d['table'],
+        'alias': list(d['alias'])[0] if 'alias' in d else d['table']
+    }
+
+
+table = (
+    Combine(Group(Keyword('S3Object[*]') | Keyword('S3Object')))('table')
+    + Optional(Suppress(Optional(AS)) + identifier)('alias')
+).setParseAction(table_transform)('from')
 
 s3_select_parser = \
     SELECT + \
     select_list + \
     FROM + \
-    table_name
+    table
