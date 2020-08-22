@@ -59,7 +59,7 @@ projection = \
     (identifier('projection') + Optional(Optional(AS) + identifier('alias'))) \
     .setParseAction(lambda _, __, tokens: {
         'projection': tokens['projection'],
-        'alias': tokens.get('alias', tokens['projection']),
+        'alias': tokens.get('alias'),
     })
 
 
@@ -86,7 +86,7 @@ table = (
     + Optional(Optional(AS) + identifier('alias'))
 )('from').setParseAction(lambda _, __, tokens: {
     'table': tokens['table'],
-    'alias': tokens.get('alias', tokens['table'])
+    'alias': tokens.get('alias')
 })
 
 s3_select_parser = \

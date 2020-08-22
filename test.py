@@ -11,7 +11,7 @@ class TestIntegration(unittest.TestCase):
             'select': '*',
             'from': {
                 'table': 'S3Object',
-                'alias': 'S3Object'
+                'alias': None,
             }
         })
 
@@ -21,7 +21,7 @@ class TestIntegration(unittest.TestCase):
             'select': '*',
             'from': {
                 'table': 'S3Object[*]',
-                'alias': 'S3Object[*]'
+                'alias': None,
             }
         })
 
@@ -52,12 +52,12 @@ class TestIntegration(unittest.TestCase):
             'select': [
                 {'projection': 'a', 'alias': 'my_alias_a'},
                 {'projection': 'b', 'alias': 'my_alias_b'},
-                {'projection': 'c', 'alias': 'c'},
-                {'projection': '"AS"', 'alias': '"AS"'},
+                {'projection': 'c', 'alias': None},
+                {'projection': '"AS"', 'alias': None},
                 {'projection': '"AS"', 'alias': '"FrOM"'},
             ],
             'from': {
                 'table': 'S3Object[*]',
-                'alias': 'S3Object[*]'
+                'alias': None,
             }
         })
