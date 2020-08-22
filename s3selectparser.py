@@ -11,7 +11,6 @@ from pyparsing import (
     MatchFirst,
     Optional,
     Word,
-    Suppress,
     alphas,
     alphanums,
     delimitedList,
@@ -89,9 +88,7 @@ select_list = \
 # FROM S3Object[*].path alias
 # FROM S3Object[*].path AS alias
 
-from_clause = Combine(
-    Group(Keyword('S3Object') + Optional(Suppress('[*]')))('table_name')
-)
+from_clause = Group(Keyword('S3Object[*]') | Keyword('S3Object'))('table_name')
 
 s3_select_parser = \
     SELECT + \
