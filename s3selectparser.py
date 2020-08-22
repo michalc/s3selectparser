@@ -90,7 +90,7 @@ select_list = \
 # FROM S3Object[*].path AS alias
 
 from_clause = Combine(
-    Group(identifier + Optional(Suppress('[*]')))('table_name')
+    Group(Keyword('S3Object') + Optional(Suppress('[*]')))('table_name')
 )
 
 s3_select_parser = \
