@@ -59,10 +59,8 @@ identifier = Combine(
 def projection_transform(_, __, tokens):
     d = tokens.asDict()
     return {
-        **d,
-        **({
-            'alias': d['projection']
-        } if 'alias' not in d else {})
+        'projection': d['projection'],
+        'alias': d.get('alias', d['projection']),
     }
 
 
