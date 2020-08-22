@@ -55,16 +55,12 @@ identifier = Combine(
 # SELECT *
 # SELECT projection [ AS column_alias | column_alias ] [, ...]
 
-def projection_transform(_, __, tokens):
-    return {
-        'projection': tokens['projection'],
-        'alias': tokens.get('alias', tokens['projection']),
-    }
-
-
 projection = \
     (identifier('projection') + Optional(Optional(AS) + identifier('alias'))) \
-    .setParseAction(projection_transform)
+    .setParseAction(lambda _, __, tokens: {
+        'projection': tokens['projection'],
+        'alias': tokens.get('alias', tokens['projection']),
+    })
 
 
 select = \
@@ -85,17 +81,13 @@ select = \
 # FROM S3Object[*].path alias
 # FROM S3Object[*].path AS alias
 
-def table_transform(_, __, tokens):
-    return {
-        'table': tokens['table'],
-        'alias': tokens.get('alias', tokens['table'])
-    }
-
-
 table = (
     Combine(Group(Keyword('S3Object[*]') | Keyword('S3Object')))('table')
     + Optional(Optional(AS) + identifier('alias'))
-).setParseAction(table_transform)('from')
+)('from').setParseAction(lambda _, __, tokens: {
+    'table': tokens['table'],
+    'alias': tokens.get('alias', tokens['table'])
+})
 
 s3_select_parser = \
     SELECT + \
