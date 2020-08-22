@@ -6,10 +6,12 @@
 from pyparsing import (
     CaselessKeyword,
     Combine,
+    Forward,
     Group,
     Keyword,
     MatchFirst,
     Optional,
+    Suppress,
     Word,
     alphas,
     alphanums,
@@ -49,6 +51,17 @@ identifier = Combine(
 )
 
 
+##############
+# Expresssions
+
+expression = Forward()
+function = (
+    Word(alphas, alphanums + '_')('name')
+    + Suppress('(') + delimitedList(expression)('arguments') + Suppress(')')
+).setParseAction(lambda tokens: [list(tokens)])
+expression <<= function | identifier
+
+
 #############
 # SELECT List
 #
@@ -56,7 +69,7 @@ identifier = Combine(
 # SELECT projection [ AS column_alias | column_alias ] [, ...]
 
 projection = \
-    (identifier('projection') + Optional(Optional(AS) + identifier('alias'))) \
+    (expression('projection') + Optional(Optional(AS) + identifier('alias'))) \
     .setParseAction(lambda _, __, tokens: {
         'projection': tokens['projection'],
         'alias': tokens.get('alias'),

@@ -47,7 +47,17 @@ class TestIntegration(unittest.TestCase):
 
     def test_select_with_alias(self):
         parsed = s3_select_parser.parseString(
-            'SELECT a as my_alias_a, b my_alias_b, c, "AS", "AS" as "FrOM" FROM S3Object[*]')
+            '''
+                SELECT
+                    a as my_alias_a,
+                    b my_alias_b,
+                    c,
+                    "AS",
+                    "AS" as "FrOM",
+                    my_func(a, another_func(b,c))
+                FROM
+                    S3Object[*]
+            ''')
         self.assertEqual(parsed.asDict(), {
             'select': [
                 {'projection': 'a', 'alias': 'my_alias_a'},
@@ -55,6 +65,7 @@ class TestIntegration(unittest.TestCase):
                 {'projection': 'c', 'alias': None},
                 {'projection': '"AS"', 'alias': None},
                 {'projection': '"AS"', 'alias': '"FrOM"'},
+                {'projection': ['my_func', 'a', ['another_func', 'b', 'c']], 'alias': None},
             ],
             'from': {
                 'table': 'S3Object[*]',
