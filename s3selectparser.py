@@ -11,6 +11,7 @@ from pyparsing import (
     Keyword,
     MatchFirst,
     Optional,
+    QuotedString,
     Suppress,
     Word,
     alphas,
@@ -59,7 +60,8 @@ function = (
     Word(alphas, alphanums + '_')('name')
     + Suppress('(') + delimitedList(expression)('arguments') + Suppress(')')
 ).setParseAction(lambda tokens: [list(tokens)])
-expression <<= function | identifier
+string_literal = QuotedString("'", escQuote="''")
+expression <<= function | string_literal | identifier
 
 
 #############
