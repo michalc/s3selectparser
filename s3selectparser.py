@@ -17,6 +17,7 @@ from pyparsing import (
     alphas,
     alphanums,
     delimitedList,
+    pyparsing_common,
 )
 
 SELECT, FROM, AS = map(
@@ -61,7 +62,7 @@ function = (
     + Suppress('(') + delimitedList(expression)('arguments') + Suppress(')')
 ).setParseAction(lambda tokens: [list(tokens)])
 string_literal = QuotedString("'", escQuote="''")
-expression <<= function | string_literal | identifier
+expression <<= function | string_literal | pyparsing_common.fnumber | identifier
 
 
 #############

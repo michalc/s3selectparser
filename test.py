@@ -54,7 +54,7 @@ class TestIntegration(unittest.TestCase):
                     c,
                     "AS",
                     "AS" as "FrOM",
-                    my_func(a, another_func(b,c)),
+                    my_func(a, another_func(47, c)),
                     'hello ''billy'' '
                 FROM
                     S3Object[*]
@@ -66,7 +66,7 @@ class TestIntegration(unittest.TestCase):
                 {'projection': 'c', 'alias': None},
                 {'projection': '"AS"', 'alias': None},
                 {'projection': '"AS"', 'alias': '"FrOM"'},
-                {'projection': ['my_func', 'a', ['another_func', 'b', 'c']], 'alias': None},
+                {'projection': ['my_func', 'a', ['another_func', 47, 'c']], 'alias': None},
                 {'projection': "hello 'billy' ", 'alias': None},
             ],
             'from': {
