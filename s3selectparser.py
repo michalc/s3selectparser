@@ -71,8 +71,8 @@ projection = \
     .setParseAction(projection_transform)
 
 
-select_list = \
-    (delimitedList(projection) | Keyword('*'))('select_list') \
+select = \
+    (delimitedList(projection) | Keyword('*'))('select') \
     .setParseAction(lambda _, __, tokens: '*' if list(tokens) == ['*'] else tokens)
 
 
@@ -104,6 +104,6 @@ table = (
 
 s3_select_parser = \
     SELECT + \
-    select_list + \
+    select + \
     FROM + \
     table
