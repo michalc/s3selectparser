@@ -45,10 +45,6 @@ reserved_keywords = map(
     'translation trim true tuple union unique unknown unpivot update upper usage user using '
     'value values varchar varying view when whenever where with work write year zone'.split()
 )
-reserved_keywords = map(
-    CaselessKeyword,
-    'as add procedure from select'.split()
-)
 identifier = Combine(~MatchFirst(reserved_keywords) + Word(alphas, alphanums + '_'))
 
 
