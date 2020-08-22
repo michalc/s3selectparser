@@ -5,8 +5,10 @@
 
 from pyparsing import (
     CaselessKeyword,
+    Combine,
     Group,
     Keyword,
+    MatchFirst,
     Optional,
     Word,
     Suppress,
@@ -19,7 +21,35 @@ SELECT, FROM, AS = map(
     CaselessKeyword, 'select from as'.split()
 )
 ASTERISK = Keyword('*')('*')
-identifier = Word(alphas, alphanums + '_').setName('identifier')
+
+reserved_keywords = map(
+    CaselessKeyword,
+    'absolute action add all allocate alter and any are as asc assertion at authorization avg '
+    'bag begin between bit bit_length blob bool boolean both by cascade cascaded case cast '
+    'catalog char char_length character character_length check clob close coalesce collate '
+    'collation column commit connect connection constraint constraints continue convert '
+    'corresponding count create cross current current_date current_time current_timestamp '
+    'current_user cursor date day deallocate dec decimal declare default deferrable deferred '
+    'delete desc describe descriptor diagnostics disconnect distinct domain double drop else '
+    'end end-exec escape except exception exec execute exists external extract false fetch '
+    'first float for foreign found from full get global go goto grant group having hour '
+    'identity immediate in indicator initially inner input insensitive insert int integer '
+    'intersect interval into is isolation join key language last leading left level like limit '
+    'list local lower match max min minute missing module month names national natural nchar '
+    'next no not null nullif numeric octet_length of on only open option or order outer output '
+    'overlaps pad partial pivot position precision prepare preserve primary prior privileges '
+    'procedure public read real references relative restrict revoke right rollback rows schema '
+    'scroll second section select session session_user set sexp size smallint some space sql '
+    'sqlcode sqlerror sqlstate string struct substring sum symbol system_user table temporary '
+    'then time timestamp timezone_hour timezone_minute to trailing transaction translate '
+    'translation trim true tuple union unique unknown unpivot update upper usage user using '
+    'value values varchar varying view when whenever where with work write year zone'.split()
+)
+reserved_keywords = map(
+    CaselessKeyword,
+    'as add procedure from select'.split()
+)
+identifier = Combine(~MatchFirst(reserved_keywords) + Word(alphas, alphanums + '_'))
 
 
 #############
@@ -39,7 +69,7 @@ def projection_transform(_, __, tokens):
 
 
 projection = \
-    (identifier('projection') + Optional(Suppress(AS) + identifier('column_alias'))) \
+    (identifier('projection') + Optional(Optional(AS) + identifier('column_alias'))) \
     .setParseAction(projection_transform)
 select_list = (delimitedList(projection) | ASTERISK)('select_list')
 
