@@ -68,7 +68,8 @@ projection = \
     .setParseAction(projection_transform)
 
 
-select_list = (delimitedList(projection) | Keyword('*'))('select_list') \
+select_list = \
+    (delimitedList(projection) | Keyword('*'))('select_list') \
     .setParseAction(lambda _, __, tokens: '*' if list(tokens) == ['*'] else tokens)
 
 
