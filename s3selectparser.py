@@ -89,9 +89,9 @@ select_list = \
 # FROM S3Object[*].path alias
 # FROM S3Object[*].path AS alias
 
-from_clause = \
-    Group(identifier + Optional(Suppress('[*]')))('table_name') \
-    .setParseAction(lambda _, __, tokens: tokens[0])
+from_clause = Combine(
+    Group(identifier + Optional(Suppress('[*]')))('table_name')
+)
 
 s3_select_parser = \
     SELECT + \
