@@ -13,13 +13,9 @@ class TestIntegration(unittest.TestCase):
         })
 
     def test_select_asterisk(self):
-        parsed = s3_select_parser.parseString('SELECT a, b, c FROM S3Object[*]')
+        parsed = s3_select_parser.parseString('SELECT * FROM S3Object[*]')
         self.assertEqual(parsed.asDict(), {
-            'select_list': [
-                {'projection': 'a', 'column_alias': 'a'},
-                {'projection': 'b', 'column_alias': 'b'},
-                {'projection': 'c', 'column_alias': 'c'},
-            ],
+            'select_list': ['*'],
             'table_name': ['S3Object'],
         })
 
