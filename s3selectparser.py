@@ -20,7 +20,6 @@ from pyparsing import (
 SELECT, FROM, AS = map(
     CaselessKeyword, 'select from as'.split()
 )
-ASTERISK = Keyword('*')('*')
 
 reserved_keywords = map(
     CaselessKeyword,
@@ -67,7 +66,10 @@ def projection_transform(_, __, tokens):
 projection = \
     (identifier('projection') + Optional(Optional(AS) + identifier('column_alias'))) \
     .setParseAction(projection_transform)
-select_list = (delimitedList(projection) | ASTERISK)('select_list')
+
+
+select_list = (delimitedList(projection) | Keyword('*'))('select_list') \
+    .setParseAction(lambda _, __, tokens: '*' if list(tokens) == ['*'] else tokens)
 
 
 #############

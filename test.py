@@ -8,14 +8,14 @@ class TestIntegration(unittest.TestCase):
     def test_select_all(self):
         parsed = s3_select_parser.parseString('SELECT * FROM S3Object')
         self.assertEqual(parsed.asDict(), {
-            'select_list': ['*'],
+            'select_list': '*',
             'table_name': ['S3Object'],
         })
 
     def test_select_asterisk(self):
         parsed = s3_select_parser.parseString('SELECT * FROM S3Object[*]')
         self.assertEqual(parsed.asDict(), {
-            'select_list': ['*'],
+            'select_list': '*',
             'table_name': ['S3Object'],
         })
 
