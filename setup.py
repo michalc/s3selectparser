@@ -8,7 +8,7 @@ def long_description():
 
 setuptools.setup(
     name='s3selectparser',
-    version='0.0.0',
+    version='0.0.1',
     author='Michal Charemza',
     author_email='michal@charemza.name',
     description='Experimental S3 Select Parser',
