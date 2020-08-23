@@ -46,6 +46,7 @@ class TestIntegration(unittest.TestCase):
         })
 
     def test_select_with_alias(self):
+        self.maxDiff = 10000
         parsed = s3_select_parser.parseString(
             '''
                 SELECT
@@ -54,7 +55,7 @@ class TestIntegration(unittest.TestCase):
                     c,
                     "AS",
                     "AS" as "FrOM",
-                    my_func(a, another_func(47, c)),
+                    4 + my_func(a, another_func(47 + 8, c)),
                     'hello ''billy'' '
                 FROM
                     S3Object[*]
@@ -66,7 +67,10 @@ class TestIntegration(unittest.TestCase):
                 {'projection': 'c', 'alias': None},
                 {'projection': '"AS"', 'alias': None},
                 {'projection': '"AS"', 'alias': '"FrOM"'},
-                {'projection': ['my_func', 'a', ['another_func', 47, 'c']], 'alias': None},
+                {
+                    'projection': [4.0, '+', ['my_func', 'a',
+                                              ['another_func', [47.0, '+', 8.0], 'c']]],
+                    'alias': None},
                 {'projection': "hello 'billy' ", 'alias': None},
             ],
             'from': {

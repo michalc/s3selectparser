@@ -11,14 +11,20 @@ from pyparsing import (
     Keyword,
     MatchFirst,
     Optional,
+    ParserElement,
+    ParseResults,
     QuotedString,
     Suppress,
     Word,
     alphas,
     alphanums,
     delimitedList,
+    oneOf,
+    opAssoc,
+    infixNotation,
     pyparsing_common,
 )
+ParserElement.enablePackrat()
 
 SELECT, FROM, AS = map(
     CaselessKeyword, 'select from as'.split()
@@ -56,13 +62,32 @@ identifier = Combine(
 ##############
 # Expresssions
 
+# Functions (both named and infix) are parsed as lists
+
 expression = Forward()
 function = (
     Word(alphas, alphanums + '_')('name')
     + Suppress('(') + delimitedList(expression)('arguments') + Suppress(')')
 ).setParseAction(lambda tokens: [list(tokens)])
 string_literal = QuotedString("'", escQuote="''")
-expression <<= function | string_literal | pyparsing_common.fnumber | identifier
+numeric_literal = pyparsing_common.fnumber
+pre_infix_expression = function | string_literal | numeric_literal | identifier
+expression <<= infixNotation(pre_infix_expression, [
+    ('-', 1, opAssoc.RIGHT),
+    (oneOf('* / %'), 2, opAssoc.LEFT),
+    (oneOf('+ -'), 2, opAssoc.LEFT),
+    (CaselessKeyword('in'), 2, opAssoc.LEFT),
+    (CaselessKeyword('between'), 2, opAssoc.LEFT),
+    (CaselessKeyword('like'), 2, opAssoc.LEFT),
+    (oneOf('< > <= >='), 2, opAssoc.LEFT),
+    ('=', 2, opAssoc.RIGHT),
+    (CaselessKeyword('not'), 1, opAssoc.RIGHT),
+    (CaselessKeyword('and'), 2, opAssoc.LEFT),
+    (CaselessKeyword('or'), 2, opAssoc.LEFT),
+]).setParseAction(
+    # If tokens[0] is a ParseResults, it's an infix expression
+    lambda tokens: [list(tokens[0])] if isinstance(tokens[0], ParseResults) else tokens
+)
 
 
 #############
