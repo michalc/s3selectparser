@@ -73,7 +73,7 @@ expression <<= function | string_literal | pyparsing_common.fnumber | identifier
 
 projection = \
     (expression('projection') + Optional(Optional(AS) + identifier('alias'))) \
-    .setParseAction(lambda _, __, tokens: {
+    .setParseAction(lambda tokens: {
         'projection': tokens['projection'],
         'alias': tokens.get('alias'),
     })
@@ -81,7 +81,7 @@ projection = \
 
 select = \
     (delimitedList(projection) | Keyword('*'))('select') \
-    .setParseAction(lambda _, __, tokens: '*' if list(tokens) == ['*'] else tokens)
+    .setParseAction(lambda tokens: '*' if list(tokens) == ['*'] else tokens)
 
 
 #############
@@ -100,7 +100,7 @@ select = \
 table = (
     Combine(Group(Keyword('S3Object[*]') | Keyword('S3Object')))('table')
     + Optional(Optional(AS) + identifier('alias'))
-)('from').setParseAction(lambda _, __, tokens: {
+)('from').setParseAction(lambda tokens: {
     'table': tokens['table'],
     'alias': tokens.get('alias')
 })
