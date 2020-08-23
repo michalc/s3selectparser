@@ -11,7 +11,7 @@ setuptools.setup(
     version='0.0.0',
     author='Michal Charemza',
     author_email='michal@charemza.name',
-    description='S3 Select Parser',
+    description='Experimental S3 Select Parser',
     long_description=long_description(),
     long_description_content_type='text/markdown',
     url='https://github.com/michalc/s3selectparser',
@@ -24,7 +24,7 @@ setuptools.setup(
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
-       ' Programming Language :: SQL',
+        'Programming Language :: SQL',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
